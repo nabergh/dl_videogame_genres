@@ -1,0 +1,4 @@
+__pycache__
+scraped_imgs/
+*.txt
+*.json
