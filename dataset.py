@@ -10,6 +10,8 @@ import torchvision.transforms as transforms
 from random import randint
 from PIL import Image
 
+NUM_GENRES = 16
+
 genre_ids = {'Action': 0,
     'Adventure': 1,
     'Arcade': 2,
@@ -37,10 +39,11 @@ def make_dataset(games_json : list, img_dir, file_ext):
         path = os.path.join(img_dir, str(game['id']) + file_ext)
         item = (path, game['genres'], game['id'])
         games_list.append(item)
+    print('Number of training games: ' + str(len(games_list)))
     return games_list
 
 def genre_transform(genres):
-    gen_tensor = torch.LongTensor([0] * 16)
+    gen_tensor = torch.zeros(16)
     for genre in genres:
         gen_tensor[genre_ids[genre]] = 1
     return gen_tensor
@@ -54,8 +57,9 @@ class GameFolder(data.Dataset):
         self.games = games
         self.im_trans = transforms.Compose([transforms.Scale(256),
             transforms.RandomHorizontalFlip(),
-            transforms.ToTensor(),
-            transforms.Normalize(mean=[0, 0, 0], std=[1, 1, 1])])
+            transforms.ToTensor()
+            # transforms.Normalize(mean=[0, 0, 0], std=[1, 1, 1])])
+            ])
         self.genre_transform = genre_transform
         self.loader = loader
 

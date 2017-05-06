@@ -3,6 +3,7 @@ import argparse
 import time
 from datetime import date
 import numpy as np
+import pickle
 
 import torch
 import torch.nn as nn
@@ -60,13 +61,13 @@ def train(model, args):
             batch_ctr += 1
 
 
-        if epoch % 2 == 0:
-            pickle.dump(model.state_dict(), open('models/' + args.save_name + '.p', 'wb'))
 
         if epoch > 2: #arbitrary epoch choice 
             if (last_epoch_loss - epoch_loss)/epoch_loss < .0001:
                 for param in range(len(optimizer.param_groups)):
                     optimizer.param_groups[param]['lr'] = optimizer.param_groups[param]['lr']/2
+
+        pickle.dump(model.state_dict(), open('models/' + args.save_name + '.p', 'wb'))
 
 
 parser = argparse.ArgumentParser(description='Genre Classifier Train')
@@ -91,5 +92,5 @@ if __name__ == '__main__':
 
     model = GenreClassifier(args.dtype, NUM_GENRES)
     if args.load_name is not None:
-        model.load_state_dict(pickle.load(open(args.load_name + '.p', 'rb')))
+        model.load_state_dict(pickle.load(open(args.load_name, 'rb')))
     train(model, args)

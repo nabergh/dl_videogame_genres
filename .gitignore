@@ -2,3 +2,10 @@ __pycache__
 scraped_imgs/
 *.txt
 *.json
+*scrape.py
+giantbomb_scrape_genres.py
+logs/
+models/
+.ipynb_checkpoints/
+results/
+*.ipynb
