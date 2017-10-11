@@ -58,7 +58,6 @@ class GameFolder(data.Dataset):
         self.im_trans = transforms.Compose([transforms.Scale(256),
             transforms.RandomHorizontalFlip(),
             transforms.ToTensor()
-            # transforms.Normalize(mean=[0, 0, 0], std=[1, 1, 1])])
             ])
         self.genre_transform = genre_transform
         self.loader = loader

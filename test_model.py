@@ -37,6 +37,7 @@ def test(model, args):
 
     preds = None
     labels = None
+    ids = None
 
     print("Gonna test!")
     for i, (imgs, genres, game_id) in enumerate(train_loader):
@@ -44,35 +45,23 @@ def test(model, args):
         if preds is None:
             preds = prediction.clone().cpu()
             labels = V(genres, volatile=True).cpu()
+            ids = game_id.clone().cpu()
         else:
             preds = torch.cat((preds, prediction.clone().cpu()), 0)
             labels = torch.cat((labels, V(genres, volatile=True).cpu()), 0)
+            ids = torch.cat((ids, game_id.clone().cpu()), 0)
 
         batch_loss = bce(prediction, V(genres, volatile=True).type(args.dtype))
 
-
-        # log_value('BCE loss', batch_loss.data[0], i)
 
         epoch_loss += batch_loss.data[0]
         batch_ctr += 1
     test_loss = bce(preds, labels)
     print('Test BCE Loss: ' + str(test_loss))
 
-    pickle.dump(preds, open('results/test_preds.p', 'wb'))
-    pickle.dump(labels, open('results/test_labels.p', 'wb'))
-
-
-    # rand_preds = preds.clone()
-
-    # for genre_ind in range(preds.size(1)):
-    #     genre_labs = np.random.shuffle(labels.data[:,genre_ind].numpy())
-    #     print(genre_labs)
-    #     rand_preds.data[:,genre_ind] = torch.FloatTensor(genre_labs)
-    # rand_test_loss = bce(rand_preds, labels)
-    # print('BCE loss for random predictions: ' + str(rand_test_loss.data[0]))
-
-
-
+    pickle.dump(preds, open('results/test_preds_3bn.p', 'wb'))
+    pickle.dump(labels, open('results/test_labels_3bn.p', 'wb'))
+    pickle.dump(ids, open('results/test_ids_3bn.p', 'wb'))
 
 parser = argparse.ArgumentParser(description='Genre Classifier Train')
 parser.add_argument('--batch-size', type=int, default=64,
